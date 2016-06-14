@@ -42,6 +42,7 @@ namespace Microsoft.AspNetCore.Http
         public const int Status417ExpectationFailed = 417;
         public const int Status418ImATeapot = 418;
         public const int Status419AuthenticationTimeout = 419;
+        public const int Status451UnavailableForLegalReasons = 451;
 
         public const int Status500InternalServerError = 500;
         public const int Status501NotImplemented = 501;
