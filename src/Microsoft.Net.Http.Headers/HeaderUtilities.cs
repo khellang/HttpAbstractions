@@ -220,7 +220,7 @@ namespace Microsoft.Net.Http.Headers
 
         public static string FormatDate(DateTimeOffset dateTime)
         {
-            return HttpRuleParser.DateToString(dateTime);
+            return dateTime.ToRfc1123String();
         }
 
         public static string RemoveQuotes(string input)
