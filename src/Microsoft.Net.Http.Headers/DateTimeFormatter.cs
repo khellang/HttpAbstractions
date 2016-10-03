@@ -4,6 +4,7 @@
 using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Net.Http.Headers
 {
@@ -24,79 +25,51 @@ namespace Microsoft.Net.Http.Headers
         private const char Space = ' ';
         private const char Colon = ':';
 
-        public static unsafe string ToRfc1123String(this DateTimeOffset dateTime)
+        public static string ToRfc1123String(this DateTimeOffset dateTime)
         {
-            var offset = 0;
             var universal = dateTime.UtcDateTime;
-            char* target = stackalloc char[Rfc1123DateLength];
+            var target = new InplaceStringBuilder(Rfc1123DateLength);
 
-            FormatDayOfWeek(universal.DayOfWeek, target, ref offset);
-            Format(Comma, target, ref offset);
-            Format(Space, target, ref offset);
-            FormatNumber(universal.Day, target, ref offset);
-            Format(Space, target, ref offset);
-            FormatMonth(universal.Month, target, ref offset);
-            Format(Space, target, ref offset);
-            FormatYear(universal.Year, target, ref offset);
-            Format(Space, target, ref offset);
-            FormatTimeOfDay(universal.TimeOfDay, target, ref offset);
-            Format(Space, target, ref offset);
-            Format(Gmt, target, ref offset);
+            target.Append(DayNames[(int)universal.DayOfWeek]);
+            target.Append(Comma);
+            target.Append(Space);
+            AppendNumber(ref target, universal.Day);
+            target.Append(Space);
+            target.Append(MonthNames[universal.Month - 1]);
+            target.Append(Space);
+            AppendYear(ref target, universal.Year);
+            target.Append(Space);
+            AppendTimeOfDay(ref target, universal.TimeOfDay);
+            target.Append(Space);
+            target.Append(Gmt);
 
-            return new string(target, 0, offset);
+            return target.ToString();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void FormatDayOfWeek(DayOfWeek dayOfWeek, char* target, ref int offset)
+        private static void AppendYear(ref InplaceStringBuilder target, int year)
         {
-            Format(DayNames[(int)dayOfWeek], target, ref offset);
+            target.Append(GetAsciiChar(year / 1000));
+            target.Append(GetAsciiChar(year % 1000 / 100));
+            target.Append(GetAsciiChar(year % 100 / 10));
+            target.Append(GetAsciiChar(year % 10));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void FormatMonth(int month, char* target, ref int offset)
+        private static void AppendTimeOfDay(ref InplaceStringBuilder target, TimeSpan timeOfDay)
         {
-            Format(MonthNames[month - 1], target, ref offset);
+            AppendNumber(ref target, timeOfDay.Hours);
+            target.Append(Colon);
+            AppendNumber(ref target, timeOfDay.Minutes);
+            target.Append(Colon);
+            AppendNumber(ref target, timeOfDay.Seconds);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void FormatYear(int year, char* target, ref int offset)
+        private static void AppendNumber(ref InplaceStringBuilder target, int number)
         {
-            Format(GetAsciiChar(year / 1000), target, ref offset);
-            Format(GetAsciiChar(year % 1000 / 100), target, ref offset);
-            Format(GetAsciiChar(year % 100 / 10), target, ref offset);
-            Format(GetAsciiChar(year % 10), target, ref offset);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void FormatTimeOfDay(TimeSpan timeOfDay, char* target, ref int offset)
-        {
-            FormatNumber(timeOfDay.Hours, target, ref offset);
-            Format(Colon, target, ref offset);
-            FormatNumber(timeOfDay.Minutes, target, ref offset);
-            Format(Colon, target, ref offset);
-            FormatNumber(timeOfDay.Seconds, target, ref offset);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void FormatNumber(int number, char* target, ref int offset)
-        {
-            Format(GetAsciiChar(number / 10), target, ref offset);
-            Format(GetAsciiChar(number % 10), target, ref offset);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void Format(string source, char* target, ref int offset)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-                target[offset++] = source[i];
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void Format(char value, char* target, ref int offset)
-        {
-            target[offset++] = value;
+            target.Append(GetAsciiChar(number / 10));
+            target.Append(GetAsciiChar(number % 10));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

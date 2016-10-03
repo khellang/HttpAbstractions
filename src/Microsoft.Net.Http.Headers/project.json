@@ -12,7 +12,6 @@
   },
   "buildOptions": {
     "warningsAsErrors": true,
-    "allowUnsafe": true,
     "keyFile": "../../tools/Key.snk",
     "nowarn": [
       "CS1591"
@@ -23,6 +22,7 @@
   "frameworks": {
     "netstandard1.1": {
       "dependencies": {
+        "Microsoft.Extensions.Primitives": "1.1.0-*",
         "System.Collections": "4.0.11-*",
         "System.Diagnostics.Contracts": "4.0.1-*",
         "System.Globalization": "4.0.11-*",
