@@ -19,8 +19,7 @@
     "xmlDoc": true
   },
   "dependencies": {
-    "Microsoft.Extensions.Primitives": "1.1.0-*",
-    "NETStandard.Library": "1.6.1-*"
+    "Microsoft.Extensions.Primitives": "1.1.0-*"
   },
   "frameworks": {
     "net451": {},
@@ -29,7 +28,8 @@
         "System.ComponentModel": "4.3.0-*",
         "System.Net.WebSockets": "4.3.0-*",
         "System.Security.Claims": "4.3.0-*",
-        "System.Security.Principal": "4.3.0-*"
+        "System.Security.Principal": "4.3.0-*",
+        "NETStandard.Library": "1.6.1-*"
       }
     }
   }
