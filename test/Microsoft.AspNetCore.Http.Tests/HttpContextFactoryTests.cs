@@ -3,7 +3,6 @@
 
 using System;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using Xunit;
 
@@ -16,7 +15,7 @@ namespace Microsoft.AspNetCore.Http
         {
             // Arrange
             var accessor = new HttpContextAccessor();
-            var contextFactory = new HttpContextFactory(new DefaultObjectPoolProvider(), Options.Create(new FormOptions()), accessor);
+            var contextFactory = new HttpContextFactory(Options.Create(new FormOptions()), accessor);
 
             // Act
             var context = contextFactory.Create(new FeatureCollection());
@@ -29,7 +28,7 @@ namespace Microsoft.AspNetCore.Http
         public void AllowsCreatingContextWithoutSettingAccessor()
         {
             // Arrange
-            var contextFactory = new HttpContextFactory(new DefaultObjectPoolProvider(), Options.Create(new FormOptions()));
+            var contextFactory = new HttpContextFactory(Options.Create(new FormOptions()));
 
             // Act & Assert
             var context = contextFactory.Create(new FeatureCollection());
@@ -49,7 +48,7 @@ namespace Microsoft.AspNetCore.Http
         {
             // Arrange
             var accessor = new HttpContextAccessor();
-            var contextFactory = new HttpContextFactory(new DefaultObjectPoolProvider(), Options.Create(new FormOptions()), accessor);
+            var contextFactory = new HttpContextFactory(Options.Create(new FormOptions()), accessor);
             var domain = AppDomain.CreateDomain("newDomain");
 
             // Act

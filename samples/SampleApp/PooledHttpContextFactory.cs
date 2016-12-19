@@ -3,10 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.ObjectPool;
 
 namespace SampleApp
 {
@@ -15,18 +13,13 @@ namespace SampleApp
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly Stack<PooledHttpContext> _pool = new Stack<PooledHttpContext>();
 
-        public PooledHttpContextFactory(ObjectPoolProvider poolProvider)
-            : this(poolProvider, httpContextAccessor: null)
+        public PooledHttpContextFactory()
+            : this(httpContextAccessor: null)
         {
         }
 
-        public PooledHttpContextFactory(ObjectPoolProvider poolProvider, IHttpContextAccessor httpContextAccessor)
+        public PooledHttpContextFactory(IHttpContextAccessor httpContextAccessor)
         {
-            if (poolProvider == null)
-            {
-                throw new ArgumentNullException(nameof(poolProvider));
-            }
-
             _httpContextAccessor = httpContextAccessor;
         }
 

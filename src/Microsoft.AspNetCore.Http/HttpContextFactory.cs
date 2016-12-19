@@ -13,17 +13,25 @@ namespace Microsoft.AspNetCore.Http
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly FormOptions _formOptions;
 
+        [Obsolete("This constructor is obsolete and will be removed in a future version. Use the overloads without an ObjectPoolProvider")]
         public HttpContextFactory(ObjectPoolProvider poolProvider, IOptions<FormOptions> formOptions)
-            : this(poolProvider, formOptions, httpContextAccessor: null)
+            : this(formOptions)
         {
         }
 
-        public HttpContextFactory(ObjectPoolProvider poolProvider, IOptions<FormOptions> formOptions, IHttpContextAccessor httpContextAccessor)
+        public HttpContextFactory(IOptions<FormOptions> formOptions)
+            : this(formOptions, httpContextAccessor: null)
         {
-            if (poolProvider == null)
-            {
-                throw new ArgumentNullException(nameof(poolProvider));
-            }
+        }
+
+        [Obsolete("This constructor is obsolete and will be removed in a future version. Use the overloads without an ObjectPoolProvider")]
+        public HttpContextFactory(ObjectPoolProvider poolProvider, IOptions<FormOptions> formOptions, IHttpContextAccessor httpContextAccessor)
+            : this(formOptions, httpContextAccessor)
+        {
+        }
+
+        public HttpContextFactory(IOptions<FormOptions> formOptions, IHttpContextAccessor httpContextAccessor)
+        {
             if (formOptions == null)
             {
                 throw new ArgumentNullException(nameof(formOptions));
