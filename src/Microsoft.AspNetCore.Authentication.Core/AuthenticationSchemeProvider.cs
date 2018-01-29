@@ -19,8 +19,16 @@ namespace Microsoft.AspNetCore.Authentication
         /// </summary>
         /// <param name="options">The <see cref="AuthenticationOptions"/> options.</param>
         public AuthenticationSchemeProvider(IOptions<AuthenticationOptions> options)
+            : this(options, StringComparer.Ordinal)
+        {
+        }
+
+        protected AuthenticationSchemeProvider(IOptions<AuthenticationOptions> options, StringComparer comparer)
         {
             _options = options.Value;
+
+            _map = new Dictionary<string, AuthenticationScheme>(comparer);
+            _requestHandlers = new List<AuthenticationScheme>();
 
             foreach (var builder in _options.Schemes)
             {
@@ -32,8 +40,8 @@ namespace Microsoft.AspNetCore.Authentication
         private readonly AuthenticationOptions _options;
         private readonly object _lock = new object();
 
-        private IDictionary<string, AuthenticationScheme> _map = new Dictionary<string, AuthenticationScheme>(StringComparer.Ordinal);
-        private List<AuthenticationScheme> _requestHandlers = new List<AuthenticationScheme>();
+        private IDictionary<string, AuthenticationScheme> _map;
+        private List<AuthenticationScheme> _requestHandlers;
 
         private Task<AuthenticationScheme> GetDefaultSchemeAsync()
             => _options.DefaultScheme != null
