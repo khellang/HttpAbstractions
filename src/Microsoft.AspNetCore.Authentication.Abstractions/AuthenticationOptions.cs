@@ -61,6 +61,11 @@ namespace Microsoft.AspNetCore.Authentication
             });
 
         /// <summary>
+        /// Gets or set the <see cref="StringComparer"/> used for lookups based on scheme name.
+        /// </summary>
+        public StringComparer SchemeNameComparer { get; set; }
+
+        /// <summary>
         /// Used as the fallback default scheme for all the other defaults.
         /// </summary>
         public string DefaultScheme { get; set; }

@@ -19,13 +19,10 @@ namespace Microsoft.AspNetCore.Authentication
         /// </summary>
         /// <param name="options">The <see cref="AuthenticationOptions"/> options.</param>
         public AuthenticationSchemeProvider(IOptions<AuthenticationOptions> options)
-            : this(options, StringComparer.Ordinal)
-        {
-        }
-
-        protected AuthenticationSchemeProvider(IOptions<AuthenticationOptions> options, StringComparer comparer)
         {
             _options = options.Value;
+
+            var comparer = _options.SchemeNameComparer ?? StringComparer.Ordinal;
 
             _map = new Dictionary<string, AuthenticationScheme>(comparer);
             _requestHandlers = new List<AuthenticationScheme>();
